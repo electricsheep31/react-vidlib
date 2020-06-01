@@ -6,15 +6,27 @@ import Pagination from "../components/pagination";
 import Genres from "../components/genres";
 import { paginate } from "../utils/paginate";
 import { filterItems } from "../utils/filter";
+import { listGroup } from "../common/listGroup";
 
 class Movies extends Component {
   state = {
-    movies: getMovies(),
-    genres: getGenres(),
+    movies: [],
+    genres: [],
     currentPage: 1,
     currentGenre: "All Genres",
     itemsPerPage: 3,
   };
+
+  //in an application where backend services are consumed, the best place to initialize genres and movies
+  //are in the componentDidMount lifecycle hook because it can take time before data is loaded and
+  //a runtime error can occur because some state properties can be undefined
+
+  componentDidMount() {
+    this.setState({
+      movies: getMovies(),
+      genres: getGenres(),
+    });
+  }
 
   handleDelete = (movie) => {
     const movies = this.state.movies.filter((m) => m._id !== movie._id);
@@ -91,12 +103,12 @@ class Movies extends Component {
           <div className="row">
             <div className="col-3">
               <Genres
-                genres={genres}
+                items={genres}
                 currentGenre={currentGenre}
                 onGenreChange={this.handleGenreClick}
               />
             </div>
-            <div className="col-9">
+            <div className="col">
               {count === 0 && <p>There are no movies in the database</p>}
               {count > 0 && <p>Showing {count} movies in the database.</p>}
 

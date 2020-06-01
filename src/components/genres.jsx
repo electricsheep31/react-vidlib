@@ -3,10 +3,17 @@ import React, { Component } from "react";
 class Genres extends Component {
   state = {};
   render() {
-    const { currentGenre, genres, onGenreChange } = this.props;
+    const {
+      currentGenre,
+      items,
+      onGenreChange,
+      textProperty,
+      valueProperty,
+    } = this.props;
     let liClasses = "list-group-item list-group-item-action";
 
     console.log(currentGenre);
+
     return (
       <ul className="list-group">
         <li
@@ -20,21 +27,32 @@ class Genres extends Component {
         >
           All Genres
         </li>
-        {genres.map((genre) => (
+        {items.map((item) => (
           <li
-            key={genre._id}
+            key={item[valueProperty]}
             className={
-              currentGenre === genre.name ? liClasses + " active" : liClasses
+              currentGenre === item[textProperty]
+                ? liClasses + " active"
+                : liClasses
             }
-            onClick={() => onGenreChange(genre.name)}
+            onClick={() => onGenreChange(item[textProperty])}
           >
-            {genre.name}
+            {item[textProperty]}
           </li>
         ))}
       </ul>
     );
   }
 }
+
+/* the extra properties (textProperty, valueProperty) makes the listgroup component flexible
+and more reusable since it doesn't rely on knowing the property names
+within an object */
+
+Genres.defaultProps = {
+  textProperty: "name",
+  valueProperty: "_id",
+};
 
 export default Genres;
 
