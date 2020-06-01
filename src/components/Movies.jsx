@@ -12,7 +12,7 @@ class Movies extends Component {
     movies: getMovies(),
     genres: getGenres(),
     currentPage: 1,
-    currentGenre: "Action",
+    currentGenre: "All Genres",
     itemsPerPage: 3,
   };
 
@@ -50,15 +50,14 @@ class Movies extends Component {
   handleGenreClick = (genre) => {
     let arr = filterItems(this.state.movies, genre.name);
     console.log(arr);
-
+    console.log(genre);
     this.setState({
-      currentGenre: genre.name,
+      currentGenre: genre,
     });
     console.log(genre);
   };
 
   render() {
-    const { length: count } = this.state.movies;
     const {
       movies,
       itemsPerPage,
@@ -67,8 +66,19 @@ class Movies extends Component {
       currentGenre,
     } = this.state;
 
-    let slicedMovies = filterItems(movies, currentGenre);
-    slicedMovies = paginate(slicedMovies, currentPage, itemsPerPage);
+    let { length: count } = movies;
+
+    let slicedMovies = [];
+    let showPagination = true;
+
+    if (currentGenre === "All Genres") {
+      console.log("thru");
+      slicedMovies = paginate(movies, currentPage, itemsPerPage);
+    } else {
+      slicedMovies = filterItems(movies, currentGenre);
+      count = slicedMovies.length;
+      showPagination = false;
+    }
 
     return (
       <React.Fragment>
@@ -112,12 +122,16 @@ class Movies extends Component {
                   ))}
                 </tbody>
               </table>
-              <Pagination
-                itemsCount={count}
-                itemsPerPage={itemsPerPage}
-                onPageChange={this.handlePageClick}
-                currentPage={currentPage}
-              />
+              {showPagination ? (
+                <Pagination
+                  itemsCount={count}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={this.handlePageClick}
+                  currentPage={currentPage}
+                />
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>

@@ -9,23 +9,24 @@ class Genres extends Component {
     console.log(currentGenre);
     return (
       <ul className="list-group">
-        {/* <li
+        <li
           className={
             currentGenre === "All Genres"
               ? "list-group-item active"
               : "list-group-item"
           }
+          onClick={() => onGenreChange("All Genres")}
           key="0"
         >
           All Genres
-        </li> */}
+        </li>
         {genres.map((genre) => (
           <li
             key={genre._id}
             className={
               currentGenre === genre.name ? liClasses + " active" : liClasses
             }
-            onClick={() => onGenreChange(genre)}
+            onClick={() => onGenreChange(genre.name)}
           >
             {genre.name}
           </li>

@@ -3,7 +3,6 @@ import _ from "lodash";
 import PropTypes from "prop-types";
 
 class Pagination extends Component {
-  state = {};
   render() {
     const { itemsPerPage, onPageChange, itemsCount, currentPage } = this.props;
     const numPages = Math.ceil(itemsCount / itemsPerPage);
