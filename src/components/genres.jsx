@@ -4,38 +4,23 @@ class Genres extends Component {
   state = {};
   render() {
     const {
-      currentGenre,
+      currentSelection,
       items,
-      onGenreChange,
+      onSelectChange,
       textProperty,
       valueProperty,
     } = this.props;
     let liClasses = "list-group-item list-group-item-action";
 
-    console.log(currentGenre);
-
     return (
       <ul className="list-group">
-        <li
-          className={
-            currentGenre === "All Genres"
-              ? "list-group-item active"
-              : "list-group-item"
-          }
-          onClick={() => onGenreChange("All Genres")}
-          key="0"
-        >
-          All Genres
-        </li>
         {items.map((item) => (
           <li
             key={item[valueProperty]}
             className={
-              currentGenre === item[textProperty]
-                ? liClasses + " active"
-                : liClasses
+              currentSelection === item ? liClasses + " active" : liClasses
             }
-            onClick={() => onGenreChange(item[textProperty])}
+            onClick={() => onSelectChange(item)}
           >
             {item[textProperty]}
           </li>

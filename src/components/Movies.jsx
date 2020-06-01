@@ -1,19 +1,19 @@
 import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
-import Movie from "../components/Movie";
-import Pagination from "../components/pagination";
-import Genres from "../components/genres";
+import Pagination from "./pagination";
+import Genres from "./genres";
+
 import { paginate } from "../utils/paginate";
-import { filterItems } from "../utils/filter";
+
 import { listGroup } from "../common/listGroup";
+import MoviesTable from "./moviesTable";
 
 class Movies extends Component {
   state = {
     movies: [],
     genres: [],
     currentPage: 1,
-    currentGenre: "All Genres",
     itemsPerPage: 3,
   };
 
@@ -22,9 +22,10 @@ class Movies extends Component {
   //a runtime error can occur because some state properties can be undefined
 
   componentDidMount() {
+    const genres = [{ name: "All Genres" }, ...getGenres()];
     this.setState({
       movies: getMovies(),
-      genres: getGenres(),
+      genres: genres,
     });
   }
 
@@ -60,37 +61,29 @@ class Movies extends Component {
   };
 
   handleGenreClick = (genre) => {
-    let arr = filterItems(this.state.movies, genre.name);
-    console.log(arr);
-    console.log(genre);
     this.setState({
       currentGenre: genre,
+      currentPage: 1,
     });
-    console.log(genre);
   };
 
   render() {
     const {
-      movies,
+      movies: allMovies,
       itemsPerPage,
       currentPage,
       genres,
       currentGenre,
     } = this.state;
 
-    let { length: count } = movies;
+    // if currentGenre is truthy, then use filter method
+    const filtered =
+      currentGenre && currentGenre._id
+        ? allMovies.filter((m) => m.genre._id === currentGenre._id)
+        : allMovies;
 
-    let slicedMovies = [];
-    let showPagination = true;
-
-    if (currentGenre === "All Genres") {
-      console.log("thru");
-      slicedMovies = paginate(movies, currentPage, itemsPerPage);
-    } else {
-      slicedMovies = filterItems(movies, currentGenre);
-      count = slicedMovies.length;
-      showPagination = false;
-    }
+    let { length: count } = filtered;
+    const filteredMovies = paginate(filtered, currentPage, itemsPerPage);
 
     return (
       <React.Fragment>
@@ -104,46 +97,26 @@ class Movies extends Component {
             <div className="col-3">
               <Genres
                 items={genres}
-                currentGenre={currentGenre}
-                onGenreChange={this.handleGenreClick}
+                currentSelection={currentGenre}
+                onSelectChange={this.handleGenreClick}
               />
             </div>
             <div className="col">
               {count === 0 && <p>There are no movies in the database</p>}
               {count > 0 && <p>Showing {count} movies in the database.</p>}
 
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Genre</th>
-                    <th>Stock</th>
-                    <th>Rate</th>
-                    <th>&nbsp;</th>
-                    <th>&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {slicedMovies.map((movie) => (
-                    <Movie
-                      key={movie._id}
-                      movie={movie}
-                      handleDelete={this.handleDelete}
-                      onLikeToggle={() => this.handleLike(movie)}
-                    />
-                  ))}
-                </tbody>
-              </table>
-              {showPagination ? (
-                <Pagination
-                  itemsCount={count}
-                  itemsPerPage={itemsPerPage}
-                  onPageChange={this.handlePageClick}
-                  currentPage={currentPage}
-                />
-              ) : (
-                ""
-              )}
+              <MoviesTable
+                movies={filteredMovies}
+                handleDelete={this.handleDelete}
+                onLikeToggle={this.handleLike}
+              />
+
+              <Pagination
+                itemsCount={count}
+                itemsPerPage={itemsPerPage}
+                onPageChange={this.handlePageClick}
+                currentPage={currentPage}
+              />
             </div>
           </div>
         </div>
