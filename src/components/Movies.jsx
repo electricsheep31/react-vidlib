@@ -2,12 +2,10 @@ import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import Pagination from "./pagination";
-import Genres from "./genres";
-
+import ListGroup from "../common/listGroup";
 import { paginate } from "../utils/paginate";
-
-import { listGroup } from "../common/listGroup";
 import MoviesTable from "./moviesTable";
+import _ from "lodash";
 
 class Movies extends Component {
   state = {
@@ -15,6 +13,7 @@ class Movies extends Component {
     genres: [],
     currentPage: 1,
     itemsPerPage: 3,
+    sortColumn: { path: "title", order: "asc" },
   };
 
   //in an application where backend services are consumed, the best place to initialize genres and movies
@@ -22,7 +21,7 @@ class Movies extends Component {
   //a runtime error can occur because some state properties can be undefined
 
   componentDidMount() {
-    const genres = [{ name: "All Genres" }, ...getGenres()];
+    const genres = [{ _id: "", name: "All Genres" }, ...getGenres()];
     this.setState({
       movies: getMovies(),
       genres: genres,
@@ -67,6 +66,10 @@ class Movies extends Component {
     });
   };
 
+  handleSort = (sortColumn) => {
+    this.setState({ sortColumn });
+  };
+
   render() {
     const {
       movies: allMovies,
@@ -74,6 +77,7 @@ class Movies extends Component {
       currentPage,
       genres,
       currentGenre,
+      sortColumn,
     } = this.state;
 
     // if currentGenre is truthy, then use filter method
@@ -83,19 +87,22 @@ class Movies extends Component {
         : allMovies;
 
     let { length: count } = filtered;
-    const filteredMovies = paginate(filtered, currentPage, itemsPerPage);
+
+    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+
+    const filteredMovies = paginate(sorted, currentPage, itemsPerPage);
 
     return (
       <React.Fragment>
         <div className="container">
           <div className="row">
             <div className="col">
-              <h1>VIDLY</h1>
+              <h1>VIDLIB</h1>
             </div>
           </div>
           <div className="row">
             <div className="col-3">
-              <Genres
+              <ListGroup
                 items={genres}
                 currentSelection={currentGenre}
                 onSelectChange={this.handleGenreClick}
@@ -107,8 +114,10 @@ class Movies extends Component {
 
               <MoviesTable
                 movies={filteredMovies}
-                handleDelete={this.handleDelete}
+                onDelete={this.handleDelete}
                 onLikeToggle={this.handleLike}
+                onSort={this.handleSort}
+                sortColumn={sortColumn}
               />
 
               <Pagination
