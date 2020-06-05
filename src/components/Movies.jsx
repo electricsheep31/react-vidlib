@@ -12,7 +12,7 @@ class Movies extends Component {
     movies: [],
     genres: [],
     currentPage: 1,
-    itemsPerPage: 3,
+    itemsPerPage: 5,
     sortColumn: { path: "title", order: "asc" },
   };
 
@@ -70,12 +70,11 @@ class Movies extends Component {
     this.setState({ sortColumn });
   };
 
-  render() {
+  getPagedData = () => {
     const {
       movies: allMovies,
       itemsPerPage,
       currentPage,
-      genres,
       currentGenre,
       sortColumn,
     } = this.state;
@@ -86,11 +85,22 @@ class Movies extends Component {
         ? allMovies.filter((m) => m.genre._id === currentGenre._id)
         : allMovies;
 
-    let { length: count } = filtered;
-
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
-
     const filteredMovies = paginate(sorted, currentPage, itemsPerPage);
+
+    return { totalCount: filtered.length, data: filteredMovies };
+  };
+
+  render() {
+    const {
+      itemsPerPage,
+      currentPage,
+      genres,
+      currentGenre,
+      sortColumn,
+    } = this.state;
+
+    const { totalCount, data: movies } = this.getPagedData();
 
     return (
       <React.Fragment>
@@ -109,19 +119,20 @@ class Movies extends Component {
               />
             </div>
             <div className="col">
-              {count === 0 && <p>There are no movies in the database</p>}
-              {count > 0 && <p>Showing {count} movies in the database.</p>}
+              {totalCount === 0 && <p>There are no movies in the database</p>}
+              {totalCount > 0 && (
+                <p>Showing {totalCount} movies in the database.</p>
+              )}
 
               <MoviesTable
-                movies={filteredMovies}
+                movies={movies}
                 onDelete={this.handleDelete}
                 onLikeToggle={this.handleLike}
                 onSort={this.handleSort}
                 sortColumn={sortColumn}
               />
-
               <Pagination
-                itemsCount={count}
+                itemsCount={totalCount}
                 itemsPerPage={itemsPerPage}
                 onPageChange={this.handlePageClick}
                 currentPage={currentPage}

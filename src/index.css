@@ -13,15 +13,6 @@ code {
     monospace;
 }
 
-/* td,
-th {
-  padding: 5px 30px 5px 0;
+.clickable {
+  cursor: pointer;
 }
-
-tr {
-  border-bottom: 1px solid #eee;
-}
-
-th {
-  border-bottom: 2px solid #eee;
-} */

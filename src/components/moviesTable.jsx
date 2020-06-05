@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Like from "../common/like";
-import TableHeader from "../common/tableHeader";
+import Table from "../common/table";
 
 class MoviesTable extends Component {
   columns = [
@@ -8,43 +8,38 @@ class MoviesTable extends Component {
     { path: "genre.name", label: "Genre" },
     { path: "numberInStock", label: "Stock" },
     { path: "dailyRentalRate", label: "Rate" },
-    { key: "like" },
-    { key: "delete" },
-  ];
-  render() {
-    const { movies, onDelete, onLikeToggle, onSort, sortColumn } = this.props;
-    return (
-      <table className="table">
-        <TableHeader
-          columns={this.columns}
-          sortColumn={sortColumn}
-          onSort={onSort}
+    {
+      key: "like",
+      content: (movie) => (
+        <Like
+          onLikeToggle={() => this.props.onLikeToggle(movie)}
+          liked={movie.liked}
         />
-        <tbody>
-          {movies.map((movie) => (
-            <tr key={movie._id}>
-              <td>{movie.title}</td>
-              <td>{movie.genre.name}</td>
-              <td>{movie.numberInStock}</td>
-              <td>{movie.dailyRentalRate}</td>
-              <td>
-                <Like
-                  onLikeToggle={() => onLikeToggle(movie)}
-                  liked={movie.liked}
-                />
-              </td>
-              <td>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => onDelete(movie)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      ),
+    },
+    {
+      key: "delete",
+      content: (movie) => (
+        <button
+          className="btn btn-danger"
+          onClick={() => this.props.onDelete(movie)}
+        >
+          Delete
+        </button>
+      ),
+    },
+  ];
+
+  render() {
+    const { movies, onSort, sortColumn } = this.props;
+    return (
+      //prevent mixed levels of abstraction. use components like tablebody and tableheader, then encapsulate within a new component
+      <Table
+        columns={this.columns}
+        data={movies}
+        sortColumn={sortColumn}
+        onSort={onSort}
+      />
     );
   }
 }
