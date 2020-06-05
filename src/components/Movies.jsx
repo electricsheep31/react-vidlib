@@ -5,6 +5,7 @@ import Pagination from "./pagination";
 import ListGroup from "../common/listGroup";
 import { paginate } from "../utils/paginate";
 import MoviesTable from "./moviesTable";
+import NavBar from "./navbar";
 import _ from "lodash";
 
 class Movies extends Component {
@@ -105,11 +106,6 @@ class Movies extends Component {
     return (
       <React.Fragment>
         <div className="container">
-          <div className="row">
-            <div className="col">
-              <h1>VIDLIB</h1>
-            </div>
-          </div>
           <div className="row">
             <div className="col-3">
               <ListGroup

@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import _ from "lodash";
 
 //use lodash so that nested properties like genre.name can be obtained in the object iteration
 
 class TableBody extends Component {
   renderCell = (item, column) => {
+    if (column.link) return column.link(item);
     if (column.content) return column.content(item); //returns React element
 
     return _.get(item, column.path);
