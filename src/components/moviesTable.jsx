@@ -8,7 +8,11 @@ class MoviesTable extends Component {
     {
       path: "title",
       label: "Title",
-      link: (movie) => <Link to={"/movies/" + movie._id}>{movie.title}</Link>,
+      content: (movie) => (
+        <Link to={"/movies/" + movie._id}>{movie.title}</Link>
+        //or use template literals to insert variable into string
+        // <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
+      ),
     },
     { path: "genre.name", label: "Genre" },
     { path: "numberInStock", label: "Stock" },

@@ -1,36 +1,33 @@
 import React, { Component } from "react";
-import "./App.css";
 import Movies from "./components/movies";
-import NavBar from "./components/navbar";
-
+import NavBar from "./components/navBar";
 import Customers from "./components/customers";
 import Rentals from "./components/rentals";
-import NotFound from "./components/not-found";
+import NotFound from "./components/notFound";
 import MovieForm from "./components/movieForm";
+import LoginForm from "./components/loginForm";
 import { Redirect, Switch, Route } from "react-router-dom";
+import "./App.css";
 
 class App extends Component {
   state = {};
   render() {
     return (
-      <main className="container">
-        <div className="row">
-          <div className="col">
-            <NavBar />
-            <div>
-              <Switch>
-                <Route path="/movies/:id" component={MovieForm} />
-                <Route path="/movies" exact component={Movies} />
-                <Route path="/customers" component={Customers} />
-                <Route path="/rentals" component={Rentals} />
-                <Route path="/not-found" component={NotFound} />
-                <Redirect from="/" to="/movies" />
-                <Redirect to="/not-found" />
-              </Switch>
-            </div>
-          </div>
-        </div>
-      </main>
+      <React.Fragment>
+        <NavBar />
+        <main className="container">
+          <Switch>
+            <Route path="/login" component={LoginForm} />
+            <Route path="/movies/:id" component={MovieForm} />
+            <Route path="/movies" exact component={Movies} />
+            <Route path="/customers" component={Customers} />
+            <Route path="/rentals" component={Rentals} />
+            <Route path="/not-found" component={NotFound} />
+            <Redirect from="/" to="/movies" />
+            <Redirect to="/not-found" />
+          </Switch>
+        </main>
+      </React.Fragment>
     );
   }
 }

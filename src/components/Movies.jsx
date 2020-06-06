@@ -5,7 +5,6 @@ import Pagination from "./pagination";
 import ListGroup from "../common/listGroup";
 import { paginate } from "../utils/paginate";
 import MoviesTable from "./moviesTable";
-import NavBar from "./navbar";
 import _ from "lodash";
 
 class Movies extends Component {
@@ -22,6 +21,7 @@ class Movies extends Component {
   //a runtime error can occur because some state properties can be undefined
 
   componentDidMount() {
+    console.log("component did mount");
     const genres = [{ _id: "", name: "All Genres" }, ...getGenres()];
     this.setState({
       movies: getMovies(),
@@ -105,35 +105,33 @@ class Movies extends Component {
 
     return (
       <React.Fragment>
-        <div className="container">
-          <div className="row">
-            <div className="col-3">
-              <ListGroup
-                items={genres}
-                currentSelection={currentGenre}
-                onSelectChange={this.handleGenreClick}
-              />
-            </div>
-            <div className="col">
-              {totalCount === 0 && <p>There are no movies in the database</p>}
-              {totalCount > 0 && (
-                <p>Showing {totalCount} movies in the database.</p>
-              )}
+        <div className="row">
+          <div className="col-3">
+            <ListGroup
+              items={genres}
+              currentSelection={currentGenre}
+              onSelectChange={this.handleGenreClick}
+            />
+          </div>
+          <div className="col">
+            {totalCount === 0 && <p>There are no movies in the database</p>}
+            {totalCount > 0 && (
+              <p>Showing {totalCount} movies in the database.</p>
+            )}
 
-              <MoviesTable
-                movies={movies}
-                onDelete={this.handleDelete}
-                onLikeToggle={this.handleLike}
-                onSort={this.handleSort}
-                sortColumn={sortColumn}
-              />
-              <Pagination
-                itemsCount={totalCount}
-                itemsPerPage={itemsPerPage}
-                onPageChange={this.handlePageClick}
-                currentPage={currentPage}
-              />
-            </div>
+            <MoviesTable
+              movies={movies}
+              onDelete={this.handleDelete}
+              onLikeToggle={this.handleLike}
+              onSort={this.handleSort}
+              sortColumn={sortColumn}
+            />
+            <Pagination
+              itemsCount={totalCount}
+              itemsPerPage={itemsPerPage}
+              onPageChange={this.handlePageClick}
+              currentPage={currentPage}
+            />
           </div>
         </div>
       </React.Fragment>
