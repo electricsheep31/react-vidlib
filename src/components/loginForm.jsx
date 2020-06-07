@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Input from "../common/input";
 
 class LoginForm extends Component {
   //refs refer to the dom object similar to "document.getelements..." in vanila,
@@ -12,43 +13,72 @@ class LoginForm extends Component {
   //   }
 
   state = {
+    //initialize forms with empty string or value from server to prevent
+    //error regarding controlled/uncontrolled elements
     account: { username: "", password: "" },
+    errors: {},
   };
 
-  handleChange = (event) => {
+  handleChange = ({ currentTarget: input }) => {
     const account = { ...this.state.account };
-    account.username = event.currentTarget.value;
+    account[input.name] = input.value;
     this.setState({ account });
+  };
+
+  //   Less efficient methods without destructuring:
+
+  //   handleChange = (event) => {
+  //     const account = { ...this.state.account };
+  //     account.username = event.currentTarget.value;
+  //     this.setState({ account });
+  //   };
+
+  //   handleChange = (event) => {
+  //     const account = { ...this.state.account };
+  //     account[event.currentTarget.name] = event.currentTarget.value;
+  //     this.setState({ account });
+  //   };
+
+  validate = () => {
+    return { username: "Username is requried" };
   };
 
   handleSubmit = (event) => {
     event.preventDefault();
     //prevents page reload from normal browser function
 
-    console.log("Submitted");
-    console.log(this.username);
+    const errors = this.validate();
+    this.setState({
+      errors,
+    });
+
+    //if null, then no value was set and call to server should not happen since return implemented
+    if (errors) return;
+
+    //call server
+    console.log("Form Submitted");
   };
   render() {
+    const { account } = this.state;
     return (
       <div>
         <h1>Login</h1>
         <form onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              value={this.state.account.username}
-              onChange={this.handleChange}
-              autoFocus
-              //   ref={this.username}
-              id="username"
-              type="text"
-              className="form-control"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input id="password" type="password" className="form-control" />
-          </div>
+          <Input
+            name="username"
+            value={account.username}
+            label="Username"
+            onChange={this.handleChange}
+            type="text"
+          />
+
+          <Input
+            name="password"
+            value={account.password}
+            label="Password"
+            onChange={this.handleChange}
+            type="password"
+          />
 
           <button className="btn btn-primary">Login</button>
         </form>
