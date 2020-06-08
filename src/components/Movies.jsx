@@ -5,6 +5,7 @@ import Pagination from "./pagination";
 import ListGroup from "../common/listGroup";
 import { paginate } from "../utils/paginate";
 import MoviesTable from "./moviesTable";
+import { NavLink, Link } from "react-router-dom";
 import _ from "lodash";
 
 class Movies extends Component {
@@ -114,6 +115,9 @@ class Movies extends Component {
             />
           </div>
           <div className="col">
+            <NavLink to="/movies/new" className="btn btn-primary new-movie">
+              New Movie
+            </NavLink>
             {totalCount === 0 && <p>There are no movies in the database</p>}
             {totalCount > 0 && (
               <p>Showing {totalCount} movies in the database.</p>
