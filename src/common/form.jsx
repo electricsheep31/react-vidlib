@@ -21,7 +21,6 @@ class Form extends Component {
     error.details.map((item) => {
       return (errors[item.path[0]] = item.message);
     });
-
     return errors;
   };
 
@@ -62,23 +61,24 @@ class Form extends Component {
   renderButton = (label) => {
     return (
       // if an object is returned, it is consodered truthy, if null, then it is falsy
-      <button disabled={this.validate()} className="btn btn-primary">
+      <button
+        onClick={this.handleSubmit}
+        disabled={this.validate()}
+        className="btn btn-primary"
+      >
         {label}
       </button>
     );
   };
 
-  renderSelect = (label, name) => {
-    const { errors } = this.state;
-    const genreNames = this.state.data.genres.map((genre) => {
-      return genre.name;
-    });
+  renderSelect = (label, name, options) => {
+    const { data, errors } = this.state;
     return (
       <Select
-        data={genreNames}
-        label={label}
-        id={name}
         name={name}
+        value={data[name]}
+        options={options}
+        label={label}
         onChange={this.handleChange}
         error={errors[name]}
       />

@@ -5,7 +5,8 @@ import Pagination from "./pagination";
 import ListGroup from "../common/listGroup";
 import { paginate } from "../utils/paginate";
 import MoviesTable from "./moviesTable";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import Search from "../common/search";
 import _ from "lodash";
 
 class Movies extends Component {
@@ -15,6 +16,7 @@ class Movies extends Component {
     currentPage: 1,
     itemsPerPage: 5,
     sortColumn: { path: "title", order: "asc" },
+    searchField: "",
   };
 
   //in an application where backend services are consumed, the best place to initialize genres and movies
@@ -72,6 +74,12 @@ class Movies extends Component {
     this.setState({ sortColumn });
   };
 
+  handleSearch = ({ currentTarget: input }) => {
+    this.setState({
+      searchField: input.value,
+    });
+  };
+
   getPagedData = () => {
     const {
       movies: allMovies,
@@ -79,13 +87,25 @@ class Movies extends Component {
       currentPage,
       currentGenre,
       sortColumn,
+      searchField,
     } = this.state;
 
-    // if currentGenre is truthy, then use filter method
-    const filtered =
-      currentGenre && currentGenre._id
-        ? allMovies.filter((m) => m.genre._id === currentGenre._id)
-        : allMovies;
+    let filtered;
+
+    if (searchField !== "") {
+      // this.setState({ currentGenre: null });
+      filtered = allMovies.filter(
+        (movie) => movie.title.toLowerCase().indexOf(searchField) > -1
+      );
+    } else {
+      filtered = allMovies;
+    }
+
+    // if (currentGenre && currentGenre._id) {
+    //   filtered = allMovies.filter((m) => m.genre._id === currentGenre._id);
+    // } else {
+    //   filtered = allMovies;
+    // }
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
     const filteredMovies = paginate(sorted, currentPage, itemsPerPage);
@@ -122,6 +142,8 @@ class Movies extends Component {
             {totalCount > 0 && (
               <p>Showing {totalCount} movies in the database.</p>
             )}
+
+            <Search name="search" onChange={this.handleSearch} />
 
             <MoviesTable
               movies={movies}

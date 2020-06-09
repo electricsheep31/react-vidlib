@@ -8,6 +8,23 @@ class RegisterForm extends Form {
     errors: {},
   };
 
+  //username: email
+  //password: min 5
+  //name: required
+  schema = {
+    username: Joi.string()
+      .email({ minDomainAtoms: 2 })
+      .required()
+      .label("Username"),
+    password: Joi.string().min(5).required().label("Password"),
+    name: Joi.string()
+      .required()
+      .label("Name")
+      .error(() => {
+        return { message: "Name is required." };
+      }),
+  };
+
   doSubmit = () => {
     //call server
     console.log("Registration Form Submitted");
