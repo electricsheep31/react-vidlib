@@ -15,6 +15,7 @@ class Movies extends Component {
     genres: [],
     currentPage: 1,
     itemsPerPage: 5,
+    currentGenre: null,
     sortColumn: { path: "title", order: "asc" },
     searchField: "",
   };
@@ -67,6 +68,7 @@ class Movies extends Component {
     this.setState({
       currentGenre: genre,
       currentPage: 1,
+      searchField: "",
     });
   };
 
@@ -77,6 +79,8 @@ class Movies extends Component {
   handleSearch = ({ currentTarget: input }) => {
     this.setState({
       searchField: input.value,
+      currentGenre: null,
+      currentPage: 1,
     });
   };
 
@@ -90,22 +94,20 @@ class Movies extends Component {
       searchField,
     } = this.state;
 
-    let filtered;
+    let filtered = allMovies;
 
     if (searchField !== "") {
-      // this.setState({ currentGenre: null });
-      filtered = allMovies.filter(
-        (movie) => movie.title.toLowerCase().indexOf(searchField) > -1
-      );
-    } else {
-      filtered = allMovies;
-    }
+      // filtered = allMovies.filter(
+      //   (movie) => movie.title.toLowerCase().indexOf(searchField) > -1
+      // );
 
-    // if (currentGenre && currentGenre._id) {
-    //   filtered = allMovies.filter((m) => m.genre._id === currentGenre._id);
-    // } else {
-    //   filtered = allMovies;
-    // }
+      //startsWith() is more appropriate when searching titles as opposed to indexOf()
+      filtered = allMovies.filter((movie) =>
+        movie.title.toLowerCase().startsWith(searchField.toLowerCase())
+      );
+    } else if (currentGenre && currentGenre._id) {
+      filtered = allMovies.filter((m) => m.genre._id === currentGenre._id);
+    }
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
     const filteredMovies = paginate(sorted, currentPage, itemsPerPage);
@@ -143,7 +145,11 @@ class Movies extends Component {
               <p>Showing {totalCount} movies in the database.</p>
             )}
 
-            <Search name="search" onChange={this.handleSearch} />
+            <Search
+              name="search"
+              value={this.state.searchField}
+              onChange={this.handleSearch}
+            />
 
             <MoviesTable
               movies={movies}
