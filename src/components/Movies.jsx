@@ -77,6 +77,7 @@ class Movies extends Component {
   };
 
   handleSearch = ({ currentTarget: input }) => {
+    console.log(input.value);
     this.setState({
       searchField: input.value,
       currentGenre: null,

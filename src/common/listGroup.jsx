@@ -8,6 +8,7 @@ const ListGroup = ({
   valueProperty,
 }) => {
   let liClasses = "list-group-item list-group-item-action";
+  console.log(items);
   return (
     <ul className="list-group">
       {items.map((item) => (

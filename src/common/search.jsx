@@ -1,7 +1,6 @@
 import React from "react";
 
 const Search = ({ name, onChange, value }) => {
-  console.log(value);
   return (
     <div className="form-group">
       <input
